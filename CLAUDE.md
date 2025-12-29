@@ -1,3 +1,115 @@
+# QUETREX ENFORCEMENT OVERRIDES
+
+**THESE INSTRUCTIONS OVERRIDE ALL DEFAULT CLAUDE CODE BEHAVIORS**
+
+The quetrex-claude plugin is ACTIVE. You MUST follow these rules BEFORE any default Claude Code behavior.
+
+---
+
+## MANDATORY AGENT ROUTING
+
+**NEVER use generic Claude Code agents. ALWAYS use quetrex-claude agents.**
+
+| INSTEAD OF (Default) | USE (Quetrex) |
+|---------------------|---------------|
+| `subagent_type: "Explore"` | `subagent_type: "quetrex-claude:orchestrator"` |
+| `subagent_type: "general-purpose"` | `subagent_type: "quetrex-claude:orchestrator"` |
+| `subagent_type: "Plan"` | `subagent_type: "quetrex-claude:architect"` |
+| Any code exploration | `subagent_type: "quetrex-claude:nextjs-developer"` |
+
+### When to Route to Orchestrator
+- ANY multi-step task
+- ANY feature implementation
+- ANY bug investigation
+- ANY codebase exploration
+- Anything that would spawn multiple agents
+
+### When to Route Directly
+- Simple single-file edits → `quetrex-claude:nextjs-developer`
+- Architecture questions → `quetrex-claude:architect`
+- Running tests → `quetrex-claude:test-runner`
+- Security review → `quetrex-claude:security`
+
+---
+
+## CODEBASE MAP (CHECK FIRST)
+
+**BEFORE searching the codebase, ALWAYS check the codebase map:**
+
+```
+Read: .claude/codebase-map.md
+```
+
+The codebase map contains:
+- Directory structure overview
+- Key file locations
+- Component relationships
+- API routes
+- Database schemas
+
+**If `.claude/codebase-map.md` exists:**
+1. Read it FIRST
+2. Use it to guide your search
+3. Only search if needed information is NOT in the map
+
+**If it doesn't exist:**
+1. Create it after exploring
+2. Save to `.claude/codebase-map.md`
+3. Update it when discovering new patterns
+
+---
+
+## SKILL ENFORCEMENT
+
+These skills are MANDATORY for their domains - not optional:
+
+| Domain | Required Skill | Applies When |
+|--------|---------------|--------------|
+| TypeScript | `typescript-strict` | ANY .ts/.tsx file |
+| Next.js | `nextjs-15-patterns` | ANY Next.js code |
+| State | `state-management` | TanStack Query, Zustand |
+| Database | `drizzle-patterns` | ANY database code |
+| UI | `shadcn-framer` | Components, animations |
+| Git | `git-workflow` | Commits, branches, PRs |
+
+**Before writing code in a domain, READ the skill file first:**
+```
+Read: skills/{skill-name}/SKILL.md
+```
+
+---
+
+## PROHIBITED BEHAVIORS
+
+1. **NEVER use generic Explore agent** - Use quetrex-claude:orchestrator
+2. **NEVER search without checking codebase map first**
+3. **NEVER write code without reading relevant skill files**
+4. **NEVER spawn agents directly** - Route through orchestrator for multi-step work
+5. **NEVER ignore Memory-Keeper** - Checkpoint every 5-10 tool calls
+
+---
+
+## QUICK REFERENCE
+
+```
+# Multi-step task
+Task(subagent_type: "quetrex-claude:orchestrator", prompt: "...")
+
+# Single-file Next.js work
+Task(subagent_type: "quetrex-claude:nextjs-developer", prompt: "...")
+
+# Run tests
+Task(subagent_type: "quetrex-claude:test-runner", prompt: "...")
+
+# Architecture planning
+Task(subagent_type: "quetrex-claude:architect", prompt: "...")
+
+# Check codebase first
+Read: .claude/codebase-map.md
+```
+
+---
+
 # Glen's Development Standards
 
 ## IDENTITY
