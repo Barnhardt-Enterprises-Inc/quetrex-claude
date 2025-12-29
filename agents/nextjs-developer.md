@@ -80,3 +80,55 @@ If you encounter ANY error:
 - **YOU MUST FIX IT**
 
 Never say "not part of current changes."
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+You MUST save progress to memory-keeper continuously during implementation:
+
+### Before Starting Any Task
+```
+context_save(key: "current-task", value: "<task description>", category: "implementation", priority: "high")
+context_save(key: "implementation-plan", value: "<full plan with file list>", priority: "high")
+```
+
+### After EVERY File Written/Modified
+```
+context_save(key: "file-<filename>", value: "<what was done, key changes>", category: "progress")
+```
+
+### Every 5-10 Tool Calls
+```
+context_checkpoint(name: "impl-checkpoint-<timestamp>", description: "<files done, files remaining, current status>")
+```
+
+### Before Large Operations (reading many files, running builds)
+```
+context_prepare_compaction()
+```
+
+### When Switching Tasks or Completing a Phase
+```
+context_batch_save() with:
+  - previous task completion summary
+  - new task description
+  - files modified so far
+  - implementation progress percentage
+```
+
+### Before Ending Work
+```
+context_checkpoint(name: "dev-session-end", description: "<complete state>")
+context_save(key: "next-action", value: "<exact next step to take>", priority: "high")
+context_save(key: "files-modified", value: "<list of all files changed>", category: "progress")
+```
+
+### Key Items to Always Track
+- `current-task`: What you're currently implementing
+- `files-modified`: List of files you've touched
+- `implementation-progress`: Percentage or phase complete
+- `next-action`: What needs to happen next
+- `blockers`: Any issues encountered

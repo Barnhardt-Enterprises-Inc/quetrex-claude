@@ -65,3 +65,21 @@ Final quality gate before PR.
 ### Security Notes
 [Any security considerations]
 ```
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+### After Completing Review
+```
+context_save(key: "review-result", value: "<approved/rejected with summary>", category: "review", priority: "high")
+context_save(key: "review-issues", value: "<list of issues found>", category: "review")
+context_checkpoint(name: "review-complete", description: "<feature> review: <approved/rejected>")
+```
+
+### Key Items to Track
+- `review-result`: Approved or rejected with reason
+- `review-issues`: Critical and warning issues found
+- `security-concerns`: Any security issues noted

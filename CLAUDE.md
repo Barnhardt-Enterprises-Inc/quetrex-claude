@@ -95,10 +95,71 @@ When failures occur:
 
 ---
 
-## MEMORY USAGE
+## MEMORY-KEEPER PROTOCOL (MANDATORY)
 
-Always interact with memory MCP:
-- **Session start:** Load project context
-- **Key decisions:** Save architectural choices
-- **Task completion:** Save what was done
-- **Failures:** Save what was tried
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+This plugin uses memory-keeper MCP for persistent context. You MUST checkpoint continuously to prevent catastrophic work loss when context is exhausted.
+
+### Session Start
+```
+context_get(limit: 50, sort: "created_desc")
+context_summarize()
+```
+Check for existing work. Use `/recover` if previous session exists.
+
+### During Work - CHECKPOINT EVERY 5-10 TOOL CALLS
+```
+context_save(key: "current-task", value: "<what you're doing>", category: "progress", priority: "high")
+context_save(key: "files-modified", value: "<list of files>", category: "progress")
+context_checkpoint(name: "checkpoint-<timestamp>", description: "<current state>")
+```
+
+### After EVERY File Written/Modified
+```
+context_save(key: "file-<filename>", value: "<what was done>", category: "progress")
+```
+
+### Before Large Operations
+```
+context_prepare_compaction()
+```
+
+### When Switching Tasks
+```
+context_batch_save() with:
+  - previous task completion
+  - new task start
+  - files modified so far
+  - implementation progress
+```
+
+### Session End or Before Break
+```
+context_checkpoint(name: "session-end", description: "<full state>")
+context_save(key: "next-action", value: "<exact next step>", priority: "high")
+```
+
+### Key Items to ALWAYS Track
+
+| Key | Description | Priority |
+|-----|-------------|----------|
+| `current-task` | What you're currently working on | high |
+| `files-modified` | All files touched this session | normal |
+| `implementation-progress` | Percentage or phase complete | normal |
+| `next-action` | Exact next step to take | high |
+| `blockers` | Current issues/blockers | high |
+
+### Recovery
+
+If you lose context or start a new session:
+1. Run `/recover` to restore state
+2. Review recovered state before continuing
+3. Confirm with user before proceeding
+
+### Checkpoint Commands
+
+- `/checkpoint` - Manual checkpoint with current state
+- `/recover` - Restore from previous checkpoints
+
+**If you run out of context without checkpointing, THE USER LOSES ALL YOUR WORK.**

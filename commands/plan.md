@@ -33,3 +33,33 @@ allowed-tools: Task, Read, Write, Bash, Grep, Glob
    - Create GitHub issue
    - Save to memory
    - Prompt: `/build {issue-number}`
+
+---
+
+## MANDATORY: Checkpointing Protocol
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+### At Plan Start
+```
+context_save(key: "planning-started", value: "<feature description>", category: "planning", priority: "high")
+```
+
+### After Design Phase
+```
+context_save(key: "design-complete", value: "<summary of design>", category: "planning")
+context_checkpoint(name: "design-phase-complete", description: "<feature> design ready")
+```
+
+### After Architecture Phase
+```
+context_save(key: "spec-complete", value: "<spec file path and summary>", category: "planning", priority: "high")
+context_checkpoint(name: "architecture-phase-complete", description: "<feature> spec saved")
+```
+
+### On Approval
+```
+context_save(key: "plan-approved", value: "issue #{issue}: <feature>", category: "planning", priority: "high")
+context_checkpoint(name: "planning-complete", description: "<feature> approved, ready for /build #{issue}")
+context_save(key: "next-action", value: "Run /build #{issue}", priority: "high")
+```

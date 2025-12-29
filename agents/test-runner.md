@@ -54,3 +54,25 @@ pnpm test:e2e          # E2E tests
 ### Suggested Fix
 [how to fix the SOURCE, not the test]
 ```
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+### After Running Tests
+```
+context_save(key: "test-results", value: "<pass/fail count, failing tests list>", category: "testing", priority: "high")
+```
+
+### After Creating Failure Report
+```
+context_save(key: "test-failures", value: "<summary of all failures>", category: "testing")
+context_checkpoint(name: "test-run-complete", description: "<X passed, Y failed>")
+```
+
+### Key Items to Track
+- `test-results`: Pass/fail summary
+- `test-failures`: List of failing tests with locations
+- `suggested-fixes`: Recommendations for qa-fixer

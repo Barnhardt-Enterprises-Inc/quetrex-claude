@@ -45,3 +45,25 @@ graph TD
 ```
 
 Present to human for approval before architect begins.
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+### Before Starting Design
+```
+context_save(key: "current-task", value: "designing: <feature>", category: "design", priority: "high")
+```
+
+### After Completing Design
+```
+context_save(key: "design-complete", value: "<summary: user flow, components, interactions>", category: "progress", priority: "high")
+context_checkpoint(name: "design-complete", description: "<feature name> design ready for approval")
+```
+
+### Key Items to Track
+- `current-task`: Feature being designed
+- `user-flow`: Summary of user journey
+- `components-planned`: List of components to build

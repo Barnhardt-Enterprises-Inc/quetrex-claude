@@ -1,6 +1,6 @@
 {
   "name": "quetrex-claude",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Quetrex for Claude Code - Glen's hardened environment for autonomous Next.js 15 development",
   "author": {
     "name": "Glen Barnhardt"
@@ -17,6 +17,8 @@
     "./commands/spawn.md",
     "./commands/status.md",
     "./commands/ship.md",
+    "./commands/checkpoint.md",
+    "./commands/recover.md",
     "./commands/create-term-project.md",
     "./commands/change-term-tab-color.md"
   ],

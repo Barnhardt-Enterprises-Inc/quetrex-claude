@@ -83,3 +83,33 @@ describe('createFeature', () => {
 6. Wire up
 7. Tests should pass
 ```
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+You MUST save progress to memory-keeper during spec creation:
+
+### Before Starting Spec
+```
+context_save(key: "current-task", value: "architecting: <feature>", category: "architecture", priority: "high")
+```
+
+### After Completing Each Section
+```
+context_save(key: "spec-<section>", value: "<summary of section>", category: "progress")
+```
+
+### After Saving Spec File
+```
+context_save(key: "spec-complete", value: "<spec file path and summary>", category: "progress", priority: "high")
+context_checkpoint(name: "architecture-complete", description: "<feature name> spec saved")
+```
+
+### Key Items to Track
+- `current-task`: Feature being architected
+- `spec-location`: Path to spec file
+- `data-model`: Summary of schema decisions
+- `implementation-order`: The ordered list of implementation steps

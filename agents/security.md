@@ -79,3 +79,21 @@ grep -r "console.log" --include="*.ts" --include="*.tsx" src/
 ### Dependency Status
 [Output of pnpm audit]
 ```
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+### After Completing Audit
+```
+context_save(key: "security-audit", value: "<risk level and summary>", category: "security", priority: "high")
+context_save(key: "security-vulnerabilities", value: "<list of issues by severity>", category: "security")
+context_checkpoint(name: "security-audit-complete", description: "<project> security audit: <risk level>")
+```
+
+### Key Items to Track
+- `security-audit`: Overall risk assessment
+- `security-vulnerabilities`: All issues found by severity
+- `security-recommendations`: Suggested remediations

@@ -49,3 +49,45 @@ Review at: ../worktrees/feature-{issue}-{slug}
 
 Recovery: Fix manually or restart
 ```
+
+---
+
+## MANDATORY: Checkpointing Protocol
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+### At Build Start
+```
+context_save(key: "build-started", value: "issue #{issue}: {title}", category: "build", priority: "high")
+context_save(key: "implementation-plan", value: "<full plan from spec>", priority: "high")
+```
+
+### After Each Phase
+```
+context_checkpoint(name: "build-phase-<N>", description: "<phase name> complete for issue #{issue}")
+```
+
+**Phase checkpoints:**
+1. After worktree setup
+2. After developer completes implementation
+3. After test-runner reports results
+4. After qa-fixer resolves issues (if any)
+5. After reviewer approves
+6. After PR creation
+
+### After EVERY File Written
+```
+context_save(key: "file-<filename>", value: "<summary of changes>", category: "progress")
+```
+
+### Before Large Operations
+```
+context_prepare_compaction()
+```
+
+### On Build Complete or Failure
+```
+context_checkpoint(name: "build-complete", description: "issue #{issue}: <success/failed at phase>")
+context_save(key: "build-result", value: "<PR number or failure details>", category: "build", priority: "high")
+context_save(key: "next-action", value: "<what to do next>", priority: "high")
+```

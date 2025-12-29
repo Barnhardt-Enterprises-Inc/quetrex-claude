@@ -69,3 +69,44 @@ Track failures: `{agent: {task: count}}`
 ### Suggested Next Steps
 [ideas if any]
 ```
+
+---
+
+## MANDATORY: Memory-Keeper Checkpointing
+
+**FAILURE TO CHECKPOINT = POTENTIAL TOTAL WORK LOSS**
+
+You MUST save progress to memory-keeper continuously:
+
+### Before Delegating to Any Agent
+```
+context_save(key: "delegating-to", value: "<agent-name>: <task description>", category: "orchestration", priority: "high")
+```
+
+### After Each Agent Completes
+```
+context_save(key: "completed-<agent>", value: "<summary of work done>", category: "progress")
+context_checkpoint(name: "post-<agent>-work", description: "<current overall state>")
+```
+
+### Every 5-10 Tool Calls
+```
+context_checkpoint(name: "checkpoint-<timestamp>", description: "<current orchestration state>")
+```
+
+### Before Large Operations
+```
+context_prepare_compaction()
+```
+
+### Before Ending Session
+```
+context_checkpoint(name: "session-end", description: "<full state summary>")
+context_save(key: "next-action", value: "<what needs to happen next>", priority: "high")
+```
+
+### Key Items to Always Track
+- `current-task`: What you're currently orchestrating
+- `delegation-queue`: Pending agent tasks
+- `completed-work`: Summary of finished work
+- `next-action`: What should happen next if session ends
