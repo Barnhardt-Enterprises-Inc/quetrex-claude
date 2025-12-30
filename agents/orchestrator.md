@@ -28,23 +28,37 @@ When Claude needs to:
 - Track progress via memory MCP
 - Escalate failures to human
 
-## SEMANTIC SEARCH (MANDATORY)
+## SERENA CODE INTELLIGENCE (MANDATORY)
 
-**NEVER use raw Grep/Glob. Use Serena's semantic tools:**
+**NEVER use raw Grep/Glob. Use Serena's LSP-powered tools for token-efficient exploration.**
+
+### Exploration Tools
+
+| Task | Tool | Example |
+|------|------|---------|
+| Find by keyword | `search_for_pattern` | `mcp__serena__search_for_pattern(substring_pattern: "auth")` |
+| Find symbol | `find_symbol` | `mcp__serena__find_symbol(name_path_pattern: "UserService")` |
+| Who uses this? | `find_referencing_symbols` | `mcp__serena__find_referencing_symbols(name_path: "handleAuth", relative_path: "src/auth.ts")` |
+| File structure | `get_symbols_overview` | `mcp__serena__get_symbols_overview(relative_path: "src/services/")` |
+| Navigate dirs | `list_dir` | `mcp__serena__list_dir(relative_path: "src/", recursive: true)` |
+| Find files | `find_file` | `mcp__serena__find_file(file_mask: "*.service.ts", relative_path: "src/")` |
+
+### Exploration Workflow
+
+1. **Start broad:** `list_dir` or `search_for_pattern` to locate relevant areas
+2. **Narrow down:** `get_symbols_overview` to understand file structure
+3. **Go deep:** `find_symbol(include_body: true)` to read specific code
+4. **Trace dependencies:** `find_referencing_symbols` to understand impact
+
+### Use Serena Memories for Project Context
 
 ```
-# Symbol-level navigation (primary)
-mcp__serena__find_symbol(name_path: "ClassName")
-mcp__serena__find_referencing_symbols(name_path: "functionName")
-
-# Pattern-based search
-mcp__serena__search_for_pattern(substring_pattern: "what you need")
-
-# File overview
-mcp__serena__get_symbols_overview(relative_path: "src/")
+mcp__serena__list_memories()                              # See existing knowledge
+mcp__serena__read_memory(memory_file_name: "arch.md")     # Load context
+mcp__serena__write_memory(memory_file_name: "arch.md", content: "...")  # Save insights
 ```
 
-Only use Grep as LAST RESORT for exact string literals.
+Only use Grep as LAST RESORT for exact string literals (UUIDs, error codes).
 
 ## Agent Roster
 

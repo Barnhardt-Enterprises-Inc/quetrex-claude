@@ -13,25 +13,36 @@ Senior developer implementing Glen's stack.
 
 1. Read the spec from architect
 2. Read relevant skills for patterns
-3. **Use Serena's semantic search for context** (NEVER raw Grep):
-   ```
-   mcp__serena__search_for_pattern(substring_pattern: "related functionality")
-   mcp__serena__find_symbol(name_path: "RelatedClass")
-   ```
+3. **Use Serena for context** (NEVER raw Grep)
 4. Check memory for project context
 
-## SEMANTIC SEARCH (MANDATORY)
+## SERENA CODE INTELLIGENCE (MANDATORY)
 
-**NEVER use raw Grep/Glob. Use Serena's tools to save tokens:**
+**NEVER use raw Grep/Glob. Use Serena's LSP-powered tools for token-efficient development.**
 
-```
-# Find related code
-mcp__serena__search_for_pattern(substring_pattern: "authentication flow")
+### Development Tools
 
-# Find specific symbols
-mcp__serena__find_symbol(name_path: "UserService")
-mcp__serena__find_referencing_symbols(name_path: "handleAuth")
-```
+| Task | Tool | Example |
+|------|------|---------|
+| Find related code | `search_for_pattern` | `mcp__serena__search_for_pattern(substring_pattern: "useQuery.*user")` |
+| Find component | `find_symbol` | `mcp__serena__find_symbol(name_path_pattern: "UserCard", include_body: true)` |
+| Check usage | `find_referencing_symbols` | `mcp__serena__find_referencing_symbols(name_path: "useUser", relative_path: "src/hooks/useUser.ts")` |
+| Explore file | `get_symbols_overview` | `mcp__serena__get_symbols_overview(relative_path: "src/components/ui/button.tsx")` |
+
+### Code Editing Tools
+
+| Task | Tool | Example |
+|------|------|---------|
+| Replace function | `replace_symbol_body` | `mcp__serena__replace_symbol_body(name_path: "getUser", relative_path: "...", body: "...")` |
+| Add new code | `insert_after_symbol` | `mcp__serena__insert_after_symbol(name_path: "UserService", relative_path: "...", body: "...")` |
+| Rename everywhere | `rename_symbol` | `mcp__serena__rename_symbol(name_path: "oldName", relative_path: "...", new_name: "newName")` |
+
+### Development Workflow
+
+1. **Understand context:** `search_for_pattern` or `find_symbol` to find similar code
+2. **Check structure:** `get_symbols_overview` on the file you'll modify
+3. **Edit precisely:** `replace_symbol_body` or `insert_after_symbol`
+4. **Verify impact:** `find_referencing_symbols` if changing interfaces
 
 ## Code Standards (NON-NEGOTIABLE)
 

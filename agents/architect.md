@@ -9,18 +9,34 @@ skills: typescript-strict, nextjs-15-patterns, drizzle-patterns
 
 Design before code. Tests before implementation.
 
-## SEMANTIC SEARCH (MANDATORY)
+## SERENA CODE INTELLIGENCE (MANDATORY)
 
-**NEVER use raw Grep/Glob. Use Serena's semantic tools:**
+**NEVER use raw Grep/Glob. Use Serena's LSP-powered tools to understand architecture.**
+
+### Architecture Discovery Tools
+
+| Task | Tool | Example |
+|------|------|---------|
+| Find patterns | `search_for_pattern` | `mcp__serena__search_for_pattern(substring_pattern: "pgTable\\|schema")` |
+| Find base classes | `find_symbol` | `mcp__serena__find_symbol(name_path_pattern: "Base", substring_matching: true)` |
+| Map dependencies | `find_referencing_symbols` | `mcp__serena__find_referencing_symbols(name_path: "db", relative_path: "src/db/index.ts")` |
+| Explore structure | `get_symbols_overview` | `mcp__serena__get_symbols_overview(relative_path: "src/services/", depth: 1)` |
+| Find conventions | `find_file` | `mcp__serena__find_file(file_mask: "*.schema.ts", relative_path: "src/")` |
+
+### Architecture Workflow
+
+1. **Discover conventions:** `find_file` to find existing patterns (schemas, services, hooks)
+2. **Analyze structure:** `get_symbols_overview` on key directories
+3. **Understand dependencies:** `find_referencing_symbols` to map how code connects
+4. **Find prior art:** `search_for_pattern` for similar implementations
+
+### Save Architecture Insights
 
 ```
-# Understand existing patterns
-mcp__serena__search_for_pattern(substring_pattern: "existing data models")
-mcp__serena__get_symbols_overview(relative_path: "src/")
-
-# Find related components
-mcp__serena__find_symbol(name_path: "BaseService")
-mcp__serena__find_referencing_symbols(name_path: "BaseService")
+mcp__serena__write_memory(
+  memory_file_name: "data-model.md",
+  content: "# Data Model\n\n## Tables\n- users\n- posts\n..."
+)
 ```
 
 ## Output: Feature Spec

@@ -34,15 +34,32 @@ Quetrex enforces a **zero-tolerance policy** for:
 
 ## Key Features
 
-### Semantic Codebase Intelligence
+### Serena - LSP-Powered Code Intelligence
 
-**No more repetitive grep searches.** Quetrex mandates Serena's semantic tools:
+**No more repetitive grep searches.** Quetrex uses Serena for token-efficient code navigation via Language Server Protocol (LSP).
+
+**Why Serena?**
+- Understands code structure (not just text)
+- 30+ language support via LSP
+- Returns only relevant symbols, not entire files
+- No external database required
 
 ```
-# Serena - LSP-powered symbol navigation
-mcp__serena__find_symbol(name_path: "UserService")
-mcp__serena__find_referencing_symbols(name_path: "handleAuth")
-mcp__serena__search_for_pattern(substring_pattern: "authentication middleware")
+# Find symbols by name
+mcp__serena__find_symbol(name_path_pattern: "UserService", include_body: true)
+
+# Find who uses a symbol
+mcp__serena__find_referencing_symbols(name_path: "handleAuth", relative_path: "src/auth.ts")
+
+# Pattern search across codebase
+mcp__serena__search_for_pattern(substring_pattern: "authentication")
+
+# Get file structure overview
+mcp__serena__get_symbols_overview(relative_path: "src/services/user.ts")
+
+# Symbol-level editing
+mcp__serena__replace_symbol_body(name_path: "getUser", relative_path: "...", body: "...")
+mcp__serena__rename_symbol(name_path: "oldName", relative_path: "...", new_name: "newName")
 ```
 
 ### Multi-Agent Orchestration
@@ -148,9 +165,22 @@ Quetrex bundles three MCP servers:
 
 | Server | Purpose |
 |--------|---------|
-| **serena** | LSP-powered symbol intelligence and semantic search |
+| **serena** | LSP-powered code intelligence (30+ languages) |
 | **memory-keeper** | Persistent context across sessions |
 | **github** | Issue/PR automation |
+
+### Serena Capabilities
+
+| Tool | Purpose |
+|------|---------|
+| `find_symbol` | Find functions, classes, variables by name |
+| `find_referencing_symbols` | Who uses this symbol? (impact analysis) |
+| `search_for_pattern` | Regex search across codebase |
+| `get_symbols_overview` | File structure at a glance |
+| `replace_symbol_body` | Edit symbol definitions |
+| `rename_symbol` | Codebase-wide rename refactoring |
+| `list_dir` / `find_file` | Navigate project structure |
+| `write_memory` / `read_memory` | Persist project knowledge |
 
 ---
 

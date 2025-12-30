@@ -32,40 +32,145 @@ The quetrex-claude plugin is ACTIVE. You MUST follow these rules BEFORE any defa
 
 ---
 
-## SEMANTIC SEARCH (MANDATORY - NO GREP)
+## SERENA - SEMANTIC CODE INTELLIGENCE (MANDATORY)
 
-**NEVER use raw Grep/Glob for codebase exploration. ALWAYS use Serena's semantic tools.**
+**NEVER use raw Grep/Glob for codebase exploration. ALWAYS use Serena's LSP-powered tools.**
 
-Quetrex uses Serena MCP for intelligent code search:
+Serena provides IDE-like code intelligence via Language Server Protocol (LSP), supporting 30+ languages with native understanding of code structure.
 
-### Serena (Symbol Intelligence - Primary)
+### Why Serena Over Grep
+
+| Method | Token Usage | Accuracy | Understanding |
+|--------|-------------|----------|---------------|
+| Raw Grep | HIGH (entire lines) | Low (noise) | Text only |
+| Serena | Minimal (symbols only) | Exact | Code structure |
+
+Serena understands what a function IS, what calls it, what it imports - not just text matching.
+
+---
+
+### Core Tools Reference
+
+#### 1. Pattern Search (Most Common)
 ```
-# Symbol-level navigation - functions, classes, variables
-mcp__serena__find_symbol(name_path: "UserService")
-mcp__serena__find_referencing_symbols(name_path: "handleAuth")
-mcp__serena__get_symbols_overview(relative_path: "src/components")
-mcp__serena__search_for_pattern(substring_pattern: "authentication")
+mcp__serena__search_for_pattern(
+  substring_pattern: "authentication",     # Regex pattern
+  relative_path: "src/",                   # Optional: restrict to path
+  restrict_search_to_code_files: true,     # Optional: code files only
+  context_lines_before: 2,                 # Optional: lines before match
+  context_lines_after: 2                   # Optional: lines after match
+)
 ```
+**Use for:** Finding code by keyword, locating implementations, discovering patterns.
+
+#### 2. Find Symbol (Functions, Classes, Variables)
+```
+mcp__serena__find_symbol(
+  name_path_pattern: "UserService",        # Symbol name or path
+  relative_path: "src/services/",          # Optional: restrict search
+  include_body: true,                      # Optional: include source code
+  depth: 1,                                # Optional: include children (methods)
+  substring_matching: true                 # Optional: partial name match
+)
+```
+**Use for:** Finding specific functions, classes, or variables by name.
+
+**Name path examples:**
+- `"UserService"` - Find symbol named UserService anywhere
+- `"UserService/getUser"` - Find getUser method in UserService class
+- `"/UserService"` - Exact match at file root level
+
+#### 3. Find References (Who Uses This?)
+```
+mcp__serena__find_referencing_symbols(
+  name_path: "handleAuth",                 # Symbol to find references for
+  relative_path: "src/auth/handler.ts"     # File containing the symbol
+)
+```
+**Use for:** Understanding dependencies, impact analysis, refactoring safely.
+
+#### 4. Get File Overview (Symbol Map)
+```
+mcp__serena__get_symbols_overview(
+  relative_path: "src/components/Button.tsx",
+  depth: 1                                 # Optional: include nested symbols
+)
+```
+**Use for:** Understanding file structure before diving in, finding entry points.
+
+#### 5. List Directory
+```
+mcp__serena__list_dir(
+  relative_path: "src/components",
+  recursive: false                         # true for full tree
+)
+```
+**Use for:** Navigating project structure, finding files.
+
+#### 6. Find File
+```
+mcp__serena__find_file(
+  file_mask: "*.service.ts",               # Glob pattern
+  relative_path: "src/"
+)
+```
+**Use for:** Finding files by naming convention.
+
+---
+
+### Symbol Editing Tools
+
+#### Replace Symbol Body
+```
+mcp__serena__replace_symbol_body(
+  name_path: "UserService/getUser",
+  relative_path: "src/services/user.ts",
+  body: "async function getUser(id: string): Promise<User> { ... }"
+)
+```
+
+#### Insert After/Before Symbol
+```
+mcp__serena__insert_after_symbol(
+  name_path: "UserService",
+  relative_path: "src/services/user.ts",
+  body: "\n\nexport class AdminService { ... }"
+)
+```
+
+#### Rename Symbol (Codebase-Wide)
+```
+mcp__serena__rename_symbol(
+  name_path: "oldFunctionName",
+  relative_path: "src/utils.ts",
+  new_name: "newFunctionName"
+)
+```
+
+---
 
 ### Search Priority Order
 
-1. **First**: Use `mcp__serena__find_symbol()` for specific symbols
-2. **Second**: Use `mcp__serena__search_for_pattern()` for pattern-based search
-3. **Third**: Use `mcp__serena__get_symbols_overview()` for file exploration
-4. **Last Resort**: Only use Grep for exact string literals (error messages, UUIDs)
+1. **Know the symbol name?** → `find_symbol(name_path_pattern: "...")`
+2. **Searching by keyword?** → `search_for_pattern(substring_pattern: "...")`
+3. **Exploring a file?** → `get_symbols_overview(relative_path: "...")`
+4. **Who uses this?** → `find_referencing_symbols(name_path: "...")`
+5. **Last resort only** → Raw Grep for exact strings (UUIDs, error messages)
 
-### Why This Matters
+---
 
-| Method | Token Usage | Accuracy |
-|--------|-------------|----------|
-| Raw Grep | HIGH (burns tokens) | Low (noise) |
-| Serena | Minimal | Exact (LSP-based) |
+### Project Setup
 
-### Project Initialization
-
-Serena auto-detects projects from .git or .serena/project.yml. Check onboarding:
+Serena auto-detects projects from `.git`. Check status:
 ```
 mcp__serena__check_onboarding_performed()
+```
+
+Use memories to store project-specific knowledge:
+```
+mcp__serena__write_memory(memory_file_name: "architecture.md", content: "...")
+mcp__serena__list_memories()
+mcp__serena__read_memory(memory_file_name: "architecture.md")
 ```
 
 ---
@@ -102,11 +207,33 @@ Read: skills/{skill-name}/SKILL.md
 
 ## QUICK REFERENCE
 
+### Serena Tools (USE INSTEAD OF GREP)
 ```
-# Semantic search (USE THIS, NOT GREP)
-mcp__serena__find_symbol(name_path: "ClassName")
-mcp__serena__search_for_pattern(substring_pattern: "what you're looking for")
+# Search by keyword
+mcp__serena__search_for_pattern(substring_pattern: "auth", relative_path: "src/")
 
+# Find symbol by name
+mcp__serena__find_symbol(name_path_pattern: "UserService", include_body: true)
+
+# Who uses this?
+mcp__serena__find_referencing_symbols(name_path: "handleAuth", relative_path: "src/auth.ts")
+
+# File overview
+mcp__serena__get_symbols_overview(relative_path: "src/services/user.ts")
+
+# Edit symbol
+mcp__serena__replace_symbol_body(name_path: "getUser", relative_path: "...", body: "...")
+
+# Rename codebase-wide
+mcp__serena__rename_symbol(name_path: "oldName", relative_path: "...", new_name: "newName")
+
+# Project memories
+mcp__serena__write_memory(memory_file_name: "context.md", content: "...")
+mcp__serena__read_memory(memory_file_name: "context.md")
+```
+
+### Agent Routing
+```
 # Multi-step task
 Task(subagent_type: "quetrex-claude:orchestrator", prompt: "...")
 
@@ -118,9 +245,6 @@ Task(subagent_type: "quetrex-claude:test-runner", prompt: "...")
 
 # Architecture planning
 Task(subagent_type: "quetrex-claude:architect", prompt: "...")
-
-# Check project setup
-mcp__serena__check_onboarding_performed()
 ```
 
 ---
