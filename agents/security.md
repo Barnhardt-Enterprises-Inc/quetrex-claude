@@ -1,7 +1,7 @@
 ---
 name: security
 description: Security audit agent. Scans for vulnerabilities and security issues.
-tools: Read, Bash, mcp__claude-context, mcp__serena
+tools: Read, Bash, mcp__serena
 ---
 
 # Security Agent
@@ -46,17 +46,17 @@ Scan for security vulnerabilities and issues.
 pnpm audit
 ```
 
-**Use semantic search for code scanning (NOT grep):**
+**Use Serena's semantic search for code scanning (NOT grep):**
 ```
 # Search for hardcoded secrets
-claude_context_search(query: "hardcoded password secret api_key token credentials")
+mcp__serena__search_for_pattern(substring_pattern: "password|secret|api_key|token|credentials")
 
 # Check for console.log in production
-claude_context_search(query: "console.log debug logging")
+mcp__serena__search_for_pattern(substring_pattern: "console\\.log")
 
 # Find authentication patterns
-serena_find_symbol(name: "auth")
-serena_get_references(symbol: "session")
+mcp__serena__find_symbol(name_path: "auth")
+mcp__serena__find_referencing_symbols(name_path: "session")
 ```
 
 ## Output Format

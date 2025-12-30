@@ -34,48 +34,38 @@ The quetrex-claude plugin is ACTIVE. You MUST follow these rules BEFORE any defa
 
 ## SEMANTIC SEARCH (MANDATORY - NO GREP)
 
-**NEVER use raw Grep/Glob for codebase exploration. ALWAYS use indexed semantic search.**
+**NEVER use raw Grep/Glob for codebase exploration. ALWAYS use Serena's semantic tools.**
 
-Quetrex includes two MCP servers for intelligent code search:
+Quetrex uses Serena MCP for intelligent code search:
 
-### Claude Context (Primary - ~40% Token Savings)
-```
-# Semantic code search - use INSTEAD of Grep
-claude_context_search(query: "authentication middleware")
-claude_context_index()  # Index/re-index the codebase
-```
-
-### Serena (Symbol Intelligence)
+### Serena (Symbol Intelligence - Primary)
 ```
 # Symbol-level navigation - functions, classes, variables
-serena_find_symbol(name: "UserService")
-serena_get_references(symbol: "handleAuth")
-serena_analyze_dependencies()
+mcp__serena__find_symbol(name_path: "UserService")
+mcp__serena__find_referencing_symbols(name_path: "handleAuth")
+mcp__serena__get_symbols_overview(relative_path: "src/components")
+mcp__serena__search_for_pattern(substring_pattern: "authentication")
 ```
 
 ### Search Priority Order
 
-1. **First**: Use `claude_context_search()` for semantic queries
-2. **Second**: Use `serena_find_symbol()` for specific symbols
-3. **Last Resort**: Only use Grep for exact string literals (error messages, UUIDs)
+1. **First**: Use `mcp__serena__find_symbol()` for specific symbols
+2. **Second**: Use `mcp__serena__search_for_pattern()` for pattern-based search
+3. **Third**: Use `mcp__serena__get_symbols_overview()` for file exploration
+4. **Last Resort**: Only use Grep for exact string literals (error messages, UUIDs)
 
 ### Why This Matters
 
 | Method | Token Usage | Accuracy |
 |--------|-------------|----------|
 | Raw Grep | HIGH (burns tokens) | Low (noise) |
-| Claude Context | **~40% less** | High (semantic) |
 | Serena | Minimal | Exact (LSP-based) |
 
-### Indexing Requirements
+### Project Initialization
 
-On first use in a project:
+Serena auto-detects projects from .git or .serena/project.yml. Check onboarding:
 ```
-# Index with Claude Context
-claude_context_index()
-
-# Initialize Serena (auto-detects .git or .serena/project.yml)
-serena_init_project()
+mcp__serena__check_onboarding_performed()
 ```
 
 ---
@@ -103,11 +93,10 @@ Read: skills/{skill-name}/SKILL.md
 ## PROHIBITED BEHAVIORS
 
 1. **NEVER use generic Explore agent** - Use quetrex-claude:orchestrator
-2. **NEVER use raw Grep/Glob for exploration** - Use Claude Context or Serena first
+2. **NEVER use raw Grep/Glob for exploration** - Use Serena's semantic tools first
 3. **NEVER write code without reading relevant skill files**
 4. **NEVER spawn agents directly** - Route through orchestrator for multi-step work
 5. **NEVER ignore Memory-Keeper** - Checkpoint every 5-10 tool calls
-6. **NEVER skip indexing** - Run claude_context_index() on new projects
 
 ---
 
@@ -115,8 +104,8 @@ Read: skills/{skill-name}/SKILL.md
 
 ```
 # Semantic search (USE THIS, NOT GREP)
-claude_context_search(query: "what you're looking for")
-serena_find_symbol(name: "ClassName")
+mcp__serena__find_symbol(name_path: "ClassName")
+mcp__serena__search_for_pattern(substring_pattern: "what you're looking for")
 
 # Multi-step task
 Task(subagent_type: "quetrex-claude:orchestrator", prompt: "...")
@@ -130,9 +119,8 @@ Task(subagent_type: "quetrex-claude:test-runner", prompt: "...")
 # Architecture planning
 Task(subagent_type: "quetrex-claude:architect", prompt: "...")
 
-# Index new project (REQUIRED first time)
-claude_context_index()
-serena_init_project()
+# Check project setup
+mcp__serena__check_onboarding_performed()
 ```
 
 ---
@@ -201,8 +189,8 @@ You are working in Glen Barnhardt's development environment. Glen is a 67-year-o
 
 ### Starting Work
 1. Check memory: "What do I know about this project?"
-2. **Index codebase if not indexed**: `claude_context_index()`, `serena_init_project()`
-3. Use semantic search to understand context (NOT grep)
+2. **Check project setup**: `mcp__serena__check_onboarding_performed()`
+3. Use Serena's semantic search to understand context (NOT grep)
 4. Create/reference GitHub issue
 5. Create feature branch in worktree
 6. Never work in main repo during implementation

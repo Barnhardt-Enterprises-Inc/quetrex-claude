@@ -1,7 +1,7 @@
 ---
 name: qa-fixer
 description: Fixes failing tests. CANNOT modify test files or configs.
-tools: Read, Write, Edit, Bash, mcp__claude-context, mcp__serena
+tools: Read, Write, Edit, Bash, mcp__serena
 skills: typescript-strict
 ---
 

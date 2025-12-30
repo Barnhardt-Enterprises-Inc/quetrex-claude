@@ -12,12 +12,12 @@ Quetrex solves the fundamental problems with using Claude Code at scale:
 
 | Problem | Quetrex Solution |
 |---------|------------------|
-| **Token burn from grep searches** | Semantic search via Claude Context (~40% savings) |
+| **Token burn from grep searches** | Semantic search via Serena |
 | **Context loss between sessions** | Mandatory memory-keeper checkpoints |
 | **Inconsistent code quality** | Strict TypeScript enforcement + lint hooks |
 | **Dangerous git operations** | Branch protection + worktree isolation |
 | **Claude ignoring instructions** | Enforcement hooks + agent routing |
-| **Repetitive codebase exploration** | Symbol-level intelligence via Serena |
+| **Repetitive codebase exploration** | LSP-powered symbol intelligence via Serena |
 
 ## Core Philosophy
 
@@ -36,15 +36,13 @@ Quetrex enforces a **zero-tolerance policy** for:
 
 ### Semantic Codebase Intelligence
 
-**No more repetitive grep searches.** Quetrex mandates indexed semantic search:
+**No more repetitive grep searches.** Quetrex mandates Serena's semantic tools:
 
 ```
-# Claude Context - 40% token savings via vector search
-claude_context_search(query: "authentication middleware")
-
 # Serena - LSP-powered symbol navigation
-serena_find_symbol(name: "UserService")
-serena_get_references(symbol: "handleAuth")
+mcp__serena__find_symbol(name_path: "UserService")
+mcp__serena__find_referencing_symbols(name_path: "handleAuth")
+mcp__serena__search_for_pattern(substring_pattern: "authentication middleware")
 ```
 
 ### Multi-Agent Orchestration
@@ -104,10 +102,6 @@ claude --plugin-dir ./quetrex-claude
 ### Required Environment Variables
 
 ```bash
-# For Claude Context (semantic search)
-export OPENAI_API_KEY="sk-..."          # For embeddings
-export MILVUS_TOKEN="your-token"        # Optional: Zilliz Cloud
-
 # For GitHub integration
 export GITHUB_TOKEN="ghp_..."
 ```
@@ -150,12 +144,11 @@ export GITHUB_TOKEN="ghp_..."
 
 ## MCP Servers
 
-Quetrex bundles four MCP servers:
+Quetrex bundles three MCP servers:
 
 | Server | Purpose |
 |--------|---------|
-| **claude-context** | Semantic code search with ~40% token savings |
-| **serena** | LSP-powered symbol intelligence |
+| **serena** | LSP-powered symbol intelligence and semantic search |
 | **memory-keeper** | Persistent context across sessions |
 | **github** | Issue/PR automation |
 

@@ -1,7 +1,7 @@
 ---
 name: nextjs-developer
 description: Senior Next.js 15 developer. Implements features per specs. Use for ALL code implementation.
-tools: Read, Write, Edit, Bash, mcp__claude-context, mcp__serena
+tools: Read, Write, Edit, Bash, mcp__serena
 skills: typescript-strict, nextjs-15-patterns, state-management, drizzle-patterns, shadcn-framer
 ---
 
@@ -13,24 +13,24 @@ Senior developer implementing Glen's stack.
 
 1. Read the spec from architect
 2. Read relevant skills for patterns
-3. **Use semantic search for context** (NEVER raw Grep):
+3. **Use Serena's semantic search for context** (NEVER raw Grep):
    ```
-   claude_context_search(query: "related functionality")
-   serena_find_symbol(name: "RelatedClass")
+   mcp__serena__search_for_pattern(substring_pattern: "related functionality")
+   mcp__serena__find_symbol(name_path: "RelatedClass")
    ```
 4. Check memory for project context
 
 ## SEMANTIC SEARCH (MANDATORY)
 
-**NEVER use raw Grep/Glob. Use indexed search to save tokens:**
+**NEVER use raw Grep/Glob. Use Serena's tools to save tokens:**
 
 ```
-# Find related code semantically
-claude_context_search(query: "authentication flow")
+# Find related code
+mcp__serena__search_for_pattern(substring_pattern: "authentication flow")
 
 # Find specific symbols
-serena_find_symbol(name: "UserService")
-serena_get_references(symbol: "handleAuth")
+mcp__serena__find_symbol(name_path: "UserService")
+mcp__serena__find_referencing_symbols(name_path: "handleAuth")
 ```
 
 ## Code Standards (NON-NEGOTIABLE)

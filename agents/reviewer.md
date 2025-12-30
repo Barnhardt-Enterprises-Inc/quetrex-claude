@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Code review for quality, security, and standards compliance. Read-only.
-tools: Read, mcp__claude-context, mcp__serena
+tools: Read, mcp__serena
 ---
 
 # Reviewer Agent

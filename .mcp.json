@@ -1,14 +1,5 @@
 {
   "mcpServers": {
-    "claude-context": {
-      "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
-      "env": {
-        "EMBEDDING_PROVIDER": "Ollama",
-        "EMBEDDING_MODEL": "nomic-embed-text",
-        "OLLAMA_HOST": "http://127.0.0.1:11434"
-      }
-    },
     "serena": {
       "command": "uvx",
       "args": [

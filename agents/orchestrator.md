@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 description: MANDATORY entry point for ALL multi-step tasks. Coordinates work. NEVER writes code. Use quetrex-claude:orchestrator INSTEAD OF generic Explore/Plan agents.
-tools: Task, Read, mcp__claude-context, mcp__serena
+tools: Task, Read, mcp__serena
 model: opus
 ---
 
@@ -30,19 +30,18 @@ When Claude needs to:
 
 ## SEMANTIC SEARCH (MANDATORY)
 
-**NEVER use raw Grep/Glob. Use indexed semantic search:**
+**NEVER use raw Grep/Glob. Use Serena's semantic tools:**
 
 ```
-# Primary - semantic code search (~40% token savings)
-claude_context_search(query: "what you need")
+# Symbol-level navigation (primary)
+mcp__serena__find_symbol(name_path: "ClassName")
+mcp__serena__find_referencing_symbols(name_path: "functionName")
 
-# Secondary - symbol-level navigation
-serena_find_symbol(name: "ClassName")
-serena_get_references(symbol: "functionName")
+# Pattern-based search
+mcp__serena__search_for_pattern(substring_pattern: "what you need")
 
-# Index new projects first
-claude_context_index()
-serena_init_project()
+# File overview
+mcp__serena__get_symbols_overview(relative_path: "src/")
 ```
 
 Only use Grep as LAST RESORT for exact string literals.
